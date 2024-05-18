@@ -19,13 +19,14 @@ export type localGuardian = {
   guardianName: string;
   guardianOccupation: string;
   guardianContactNo: string;
+  guardianAddress: string;
 };
 
 export type Student = {
   id: string;
   name: UserName;
   gender: 'male' | 'female';
-  dateOfBirth: string;
+  dateOfBirth?: string;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
@@ -34,4 +35,6 @@ export type Student = {
   permanentAddress: string;
   guardian: Guardian;
   localGuardian: localGuardian;
+  profileImage?: string;
+  isActive: 'active' | 'blocked';
 };
