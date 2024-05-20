@@ -10,13 +10,24 @@ const userNameSchema = new Schema<UserName>({
   firstName: {
     type: String,
     required: [true, 'FirstName is required'],
+    trim: true,
+    maxlength: [20, 'FirstName can not be more than 20 characters'],
+    validate: {
+      validator: function (value: String) {
+        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+        return firstNameStr === value;
+      },
+      message: '{VALUE} is not in Capitalize formate',
+    },
   },
   middleName: {
     type: String,
+    trim: true,
   },
   lastName: {
     type: String,
     required: [true, 'LastName is required'],
+    trim: true,
   },
 });
 
