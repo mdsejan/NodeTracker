@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { StudentServices } from './student.service';
-import Joi from 'joi';
+import { z } from 'zod';
 import studentValidationSchema from './student.validation';
 
 const createStudent = async (req: Request, res: Response) => {
@@ -8,18 +8,21 @@ const createStudent = async (req: Request, res: Response) => {
     const studentData = req.body.student;
 
     // data validation using Joi
-    const { error, value } = studentValidationSchema.validate(studentData);
+    // const { error, value } = studentValidationSchema.validate(studentData);
 
-    const result = await StudentServices.createStudentIntoDB(value);
+    // data validation using zod
+    const zodparseData = studentValidationSchema.parse(studentData);
+
+    const result = await StudentServices.createStudentIntoDB(zodparseData);
 
     // console.log({ error, value });
-    if (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Something Went Wrong',
-        error: error.details,
-      });
-    }
+    // if (error) {
+    //   res.status(500).json({
+    //     success: false,
+    //     message: 'Something Went Wrong',
+    //     error: error.details,
+    //   });
+    // }
 
     res.status(200).json({
       success: true,
