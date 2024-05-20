@@ -5,6 +5,7 @@ import {
   UserName,
   localGuardian,
 } from './student/student.interface';
+import validator from 'validator';
 
 const userNameSchema = new Schema<UserName>({
   firstName: {
@@ -12,13 +13,13 @@ const userNameSchema = new Schema<UserName>({
     required: [true, 'FirstName is required'],
     trim: true,
     maxlength: [20, 'FirstName can not be more than 20 characters'],
-    validate: {
-      validator: function (value: String) {
-        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
-        return firstNameStr === value;
-      },
-      message: '{VALUE} is not in Capitalize formate',
-    },
+    // validate: {
+    //   validator: function (value: String) {
+    //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+    //     return firstNameStr === value;
+    //   },
+    //   message: '{VALUE} is not in Capitalize formate',
+    // },
   },
   middleName: {
     type: String,
@@ -26,8 +27,9 @@ const userNameSchema = new Schema<UserName>({
   },
   lastName: {
     type: String,
-    required: [true, 'LastName is required'],
-    trim: true,
+    // validate: {
+    //   validator: (value: string) => validator.isAlpha(value),
+    // },
   },
 });
 
@@ -92,7 +94,15 @@ const studentSchema = new Schema<Student>({
     required: true,
   },
   dateOfBirth: { type: String },
-  email: { type: String, required: true, unique: true },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    // validate: {
+    //   validator: (value: string) => validator.isEmail(value),
+    //   message: '{VALUE} is not a valid Email',
+    // },
+  },
   contactNo: { type: String, required: true, unique: true },
   emergencyContactNo: { type: String, required: true },
   bloodGroup: {
