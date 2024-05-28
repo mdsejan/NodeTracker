@@ -1,72 +1,59 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-// Define Joi schema for UserName
-const userNameSchema = Joi.object({
-  firstName: Joi.string()
-    .required()
-    .trim()
-    .max(20)
-    .pattern(/^[A-Z][a-z]*$/, { name: 'capitalize' })
-    .messages({
-      'any.required': 'FirstName is required',
-      'string.base': 'FirstName must be a string',
-      'string.empty': 'FirstName cannot be empty',
-      'string.max': 'FirstName cannot be more than 20 characters',
-      'string.pattern.base': 'FirstName must start with a capital letter',
-    }),
-  middleName: Joi.string().trim(),
-  lastName: Joi.string()
-    .pattern(/^[a-zA-Z]+$/)
-    .messages({
-      'string.pattern.base': 'LastName must contain only alphabetic characters',
-    }),
-});
-
-// Define Joi schema for Guardian
-const guardianSchema = Joi.object({
-  fatherName: Joi.string().required().messages({
-    'any.required': 'FatherName is required',
+// Define Zod schema for UserName
+const userNameValidationSchema = z.object({
+  firstName: z
+    .string()
+    .max(20, { message: 'FirstName can not be more than 20 characters' })
+    .refine(
+      (value) => {
+        const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+        return firstNameStr === value;
+      },
+      { message: 'FirstName is not in Capitalize format' },
+    ),
+  middleName: z.string().optional(),
+  lastName: z.string().refine((value) => /^[a-zA-Z]+$/.test(value), {
+    message: 'LastName must contain only alphabetic characters',
   }),
-  fatherOccupation: Joi.string().required(),
-  fatherContactNo: Joi.string().required(),
-  motherName: Joi.string().required(),
-  motherOccupation: Joi.string().required(),
-  motherContactNo: Joi.string().required(),
 });
 
-// Define Joi schema for Local Guardian
-const localGuardianSchema = Joi.object({
-  guardianName: Joi.string().required(),
-  guardianOccupation: Joi.string().required(),
-  guardianContactNo: Joi.string().required(),
-  guardianAddress: Joi.string().required(),
+// Define Zod schema for Guardian
+const guardianValidationSchema = z.object({
+  fatherName: z.string().nonempty('FatherName is required'),
+  fatherOccupation: z.string().nonempty(),
+  fatherContactNo: z.string().nonempty(),
+  motherName: z.string().nonempty(),
+  motherOccupation: z.string().nonempty(),
+  motherContactNo: z.string().nonempty(),
 });
 
-// Define Joi schema for Student
-const studentValidationSchema = Joi.object({
-  id: Joi.string().required(),
-  name: userNameSchema.required(),
-  gender: Joi.string().valid('male', 'female', 'other').required(),
-  dateOfBirth: Joi.string(),
-  email: Joi.string().email().required(),
-  contactNo: Joi.string().required(),
-  emergencyContactNo: Joi.string().required(),
-  bloodGroup: Joi.string().valid(
-    'A+',
-    'A-',
-    'B+',
-    'B-',
-    'AB+',
-    'AB-',
-    'O+',
-    'O-',
-  ),
-  presentAddress: Joi.string().required(),
-  permanentAddress: Joi.string().required(),
-  guardian: guardianSchema.required(),
-  localGuardian: localGuardianSchema.required(),
-  profileImage: Joi.string(),
-  isActive: Joi.string().valid('active', 'blocked').default('active'),
+// Define Zod schema for Local Guardian
+const localGuardianValidationSchema = z.object({
+  guardianName: z.string().nonempty(),
+  guardianOccupation: z.string().nonempty(),
+  guardianContactNo: z.string().nonempty(),
+  guardianAddress: z.string().nonempty(),
+});
+
+// Define Zod schema for Student
+const studentValidationSchema = z.object({
+  id: z.string().nonempty(),
+  name: userNameValidationSchema,
+  gender: z.enum(['male', 'female', 'other']),
+  dateOfBirth: z.string().optional(),
+  email: z.string().email({ message: '{VALUE} is not a valid Email' }),
+  contactNo: z.string().nonempty(),
+  emergencyContactNo: z.string().nonempty(),
+  bloodGroup: z
+    .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
+    .optional(),
+  presentAddress: z.string().nonempty(),
+  permanentAddress: z.string().nonempty(),
+  guardian: guardianValidationSchema,
+  localGuardian: localGuardianValidationSchema,
+  profileImage: z.string().optional(),
+  isActive: z.enum(['active', 'blocked']).default('active'),
 });
 
 export default studentValidationSchema;
