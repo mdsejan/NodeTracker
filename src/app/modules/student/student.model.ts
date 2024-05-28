@@ -1,13 +1,15 @@
 import { Schema, model } from 'mongoose';
 import {
-  Guardian,
-  Student,
-  UserName,
-  localGuardian,
+  TGuardian,
+  TStudent,
+  StudentModel,
+  TUserName,
+  TlocalGuardian,
+  studentMethods,
 } from './student/student.interface';
 import validator from 'validator';
 
-const userNameSchema = new Schema<UserName>({
+const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     required: [true, 'FirstName is required'],
@@ -33,7 +35,7 @@ const userNameSchema = new Schema<UserName>({
   },
 });
 
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
     required: [true, 'FatherName is required'],
@@ -60,7 +62,7 @@ const guardianSchema = new Schema<Guardian>({
   },
 });
 
-const localGuardianSchema = new Schema<localGuardian>({
+const localGuardianSchema = new Schema<TlocalGuardian>({
   guardianName: {
     type: String,
     required: true,
@@ -79,7 +81,7 @@ const localGuardianSchema = new Schema<localGuardian>({
   },
 });
 
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel, studentMethods>({
   id: { type: String, required: true, unique: true },
   name: {
     type: userNameSchema,
@@ -127,4 +129,4 @@ const studentSchema = new Schema<Student>({
   },
 });
 
-export const StudentModel = model<Student>('Student', studentSchema);
+export const Student = model<TStudent>('Student', studentSchema);
