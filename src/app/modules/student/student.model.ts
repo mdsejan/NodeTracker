@@ -6,7 +6,7 @@ import {
   TUserName,
   TlocalGuardian,
   studentMethods,
-} from './student/student.interface';
+} from './student.interface';
 import validator from 'validator';
 
 const userNameSchema = new Schema<TUserName>({
@@ -87,6 +87,12 @@ const studentSchema = new Schema<TStudent, StudentModel, studentMethods>({
     type: userNameSchema,
     required: true,
   },
+  user: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'User id is required'],
+    unique: true,
+    ref: 'User',
+  },
   gender: {
     type: String,
     enum: {
@@ -122,11 +128,6 @@ const studentSchema = new Schema<TStudent, StudentModel, studentMethods>({
     required: true,
   },
   profileImage: { type: String },
-  isActive: {
-    type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
-  },
 });
 
 export const Student = model<TStudent>('Student', studentSchema);
