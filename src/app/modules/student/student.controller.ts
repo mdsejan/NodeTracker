@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.service';
+import sendResponse from '../../utils/sendResponse';
+import httpStatus from 'http-status';
 
 const getSingleStudent = async (
   req: Request,
@@ -10,12 +12,12 @@ const getSingleStudent = async (
     const { studentId } = req.params;
     const result = await StudentServices.getSingleStudentFromDB(studentId);
 
-    // sendResponse(res, {
-    //   statusCode: httpStatus.OK,
-    //   success: true,
-    //   message: 'Student is retrieved succesfully',
-    //   data: result,
-    // });
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Student is retrieved succesfully',
+      data: result,
+    });
   } catch (err) {
     next(err);
   }
@@ -29,12 +31,12 @@ const getAllStudents = async (
   try {
     const result = await StudentServices.getAllStudentFromDB();
 
-    // sendResponse(res, {
-    //   statusCode: httpStatus.OK,
-    //   success: true,
-    //   message: 'Student are retrieved succesfully',
-    //   data: result,
-    // });
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Student are retrieved succesfully',
+      data: result,
+    });
   } catch (err) {
     next(err);
   }
@@ -49,12 +51,12 @@ const deleteStudent = async (
     const { studentId } = req.params;
     const result = await StudentServices.deleteStudentFromDB(studentId);
 
-    // sendResponse(res, {
-    //   statusCode: httpStatus.OK,
-    //   success: true,
-    //   message: 'Student is deleted succesfully',
-    //   data: result,
-    // });
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Student is deleted succesfully',
+      data: result,
+    });
   } catch (err) {
     next(err);
   }
