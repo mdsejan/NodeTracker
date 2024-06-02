@@ -1,15 +1,11 @@
 import { z } from 'zod';
 
 const userValidationSchema = z.object({
-  id: z.string().nonempty(),
   password: z
-    .string()
+    .string({ invalid_type_error: 'Password must be a string' })
     .nonempty()
-    .max(20, { message: 'Password can not be more than 20 characters' }),
-  needsPasswordChange: z.boolean().optional().default(true),
-  role: z.enum(['admin', 'student', 'facalty']),
-  status: z.enum(['in-progress', 'blocked']).default('in-progress'),
-  isDeleted: z.boolean().optional().default(false),
+    .max(20, { message: 'Password can not be more than 20 characters' })
+    .optional(),
 });
 
 export const Useralidation = { userValidationSchema };
